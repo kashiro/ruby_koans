@@ -17,6 +17,11 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # * Everything else is worth 0 points.
 #
+# 1の3セットは1000ポイント
+# セットではない1は100ポイント
+# セットではない5は50ポイント
+# 1以外の3セットは100倍
+# それ以外は0ポイント
 #
 # Examples:
 #
@@ -30,28 +35,40 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 # Your goal is to write the score method.
 
 def score(dice)
-  # You need to write this method
-  #--
+  count_hash = find_pair(dice)
+  result = calc(count_hash)
+  result
+end
+
+def calc(count_hash)
   result = 0
-  (1..6).each do |face|
-    count = dice.select { |n| n == face }.size
-    while count > 0
-      if count >= 3
-        result += (face == 1) ? 1000 : 100 * face
-        count -= 3
-      elsif face == 5
-        result += count * 50
-        count = 0
-      elsif face == 1
-        result += count * 100
-        count = 0
-      else
-        count = 0
-      end
+  set = 3
+  count_hash.each do |num, count|
+    if num === 1
+      result += (count / set) * 1000
+      result += (count % set) * 100
+	else
+      if num === 5
+        result += (count / set) * num * 100
+        result += (count % set) * 50
+	  elsif (count / set) > 0
+        result += (count / set) * num * 100
+	  end
+	end
+  end 
+  result
+end
+
+def find_pair(dice)
+  count_hash = {}
+  dice.each do |num|
+    if count_hash.has_key?(num)
+      count_hash[num] += 1
+    else
+      count_hash[num] = 1
     end
   end
-  result
-  #++
+  count_hash
 end
 
 class AboutScoringProject < Neo::Koan
