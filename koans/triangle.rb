@@ -14,6 +14,18 @@
 #   about_triangle_project_2.rb
 #
 def triangle(a, b, c)
+
+	# if a == 0 || b == 0 || c == 0
+	# 	raise TriangleError
+	# end
+
+	# if (a+b <= c) || (a+c <= b) || (b+c <= a)
+	# 	raise TriangleError
+	# end
+
+	a, b, c = [a, b, c].sort!
+	raise TriangleError if a + b <= c || a <= 0
+
 	side1 = a == b
 	side2 = a == c
 	side3 = b == c
