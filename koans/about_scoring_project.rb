@@ -30,9 +30,41 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 # Your goal is to write the score method.
 
 def score(dice)
-  # You need to write this method
+  count_hash = find_pair(dice)
+  result = calc(count_hash)
+  result
 end
 
+def calc(count_hash)
+  result = 0
+  set = 3
+  count_hash.each do |num, count|
+    if num === 1
+      result += (count / set) * 1000
+      result += (count % set) * 100
+	else
+      if num === 5
+        result += (count / set) * num * 100
+        result += (count % set) * 50
+	  elsif (count / set) > 0
+        result += (count / set) * num * 100
+	  end
+	end
+  end 
+  result
+end
+
+def find_pair(dice)
+  count_hash = {}
+  dice.each do |num|
+    if count_hash.has_key?(num)
+      count_hash[num] += 1
+    else
+      count_hash[num] = 1
+    end
+  end
+  count_hash
+end
 class AboutScoringProject < Neo::Koan
   def test_score_of_an_empty_list_is_zero
     assert_equal 0, score([])
